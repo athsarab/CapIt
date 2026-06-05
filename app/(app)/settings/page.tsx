@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useApp } from '@/lib/context/AppContext';
 import { createClient } from '@/lib/supabase/client';
-import { useTheme } from 'next-themes';
+import { useTheme } from '@/components/providers/ThemeProvider';
 import { useRouter } from 'next/navigation';
 import { Loader2, User, LogOut, Sun, Moon, Wallet } from 'lucide-react';
 import toast from 'react-hot-toast';

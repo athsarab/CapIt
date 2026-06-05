@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { useTheme } from 'next-themes';
+import { useTheme } from '@/components/providers/ThemeProvider';
 import {
   LayoutDashboard, ArrowLeftRight, RefreshCw, PieChart,
   Target, Wallet, TrendingUp, Sun, Moon, LogOut, Settings, X
@@ -28,7 +28,7 @@ export function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -96,13 +96,13 @@ export function Sidebar({ onClose }: SidebarProps) {
         </Link>
 
         <button
-          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
           id="theme-toggle"
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all hover:bg-slate-100 dark:hover:bg-slate-800"
           style={{ color: 'var(--muted-foreground)' }}
         >
-          {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+          {resolvedTheme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          {resolvedTheme === 'dark' ? 'Light Mode' : 'Dark Mode'}
         </button>
 
         <button

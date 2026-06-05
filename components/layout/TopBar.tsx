@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Menu, TrendingUp, Sun, Moon } from 'lucide-react';
-import { useTheme } from 'next-themes';
+import { useTheme } from '@/components/providers/ThemeProvider';
 import { Sidebar } from './Sidebar';
 
 const pageTitles: Record<string, string> = {
@@ -18,7 +18,7 @@ const pageTitles: Record<string, string> = {
 
 export function TopBar() {
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const title = Object.entries(pageTitles).find(([k]) => pathname.startsWith(k))?.[1] ?? 'CapIt';
@@ -46,11 +46,13 @@ export function TopBar() {
         </div>
 
         <button
-          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
           id="mobile-theme-toggle"
           className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
         >
-          {theme === 'dark' ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5" style={{ color: 'var(--muted-foreground)' }} />}
+          {resolvedTheme === 'dark'
+            ? <Sun className="w-5 h-5 text-yellow-400" />
+            : <Moon className="w-5 h-5" style={{ color: 'var(--muted-foreground)' }} />}
         </button>
       </header>
 

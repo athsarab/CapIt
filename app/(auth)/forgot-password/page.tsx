@@ -41,8 +41,13 @@ export default function ForgotPasswordPage() {
           <h1 className="text-3xl font-bold text-white">CapIt</h1>
         </div>
 
-        <div className="rounded-2xl p-8 border"
-          style={{ background: 'rgba(30,41,59,0.8)', backdropFilter: 'blur(20px)', borderColor: 'rgba(255,255,255,0.1)' }}>
+        <div className="rounded-2xl border"
+          style={{
+            background: 'rgba(30,41,59,0.8)',
+            backdropFilter: 'blur(20px)',
+            borderColor: 'rgba(255,255,255,0.1)',
+            padding: '2rem',
+          }}>
           {sent ? (
             <div className="text-center py-4">
               <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
@@ -64,7 +69,7 @@ export default function ForgotPasswordPage() {
                 <p className="text-slate-400 text-sm mt-1">Enter your email and we&apos;ll send you a reset link.</p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div>
                   <label className="block text-sm font-medium text-slate-300 mb-1.5">Email</label>
                   <input
@@ -83,8 +88,7 @@ export default function ForgotPasswordPage() {
                   id="reset-btn"
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 px-4 rounded-xl font-semibold text-white flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
-                  style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}
+                  className="btn-primary w-full py-3 flex items-center justify-center gap-2"
                 >
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
                   {loading ? 'Sending...' : 'Send Reset Link'}

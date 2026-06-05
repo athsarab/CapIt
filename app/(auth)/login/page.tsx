@@ -50,11 +50,16 @@ export default function LoginPage() {
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl p-8 border"
-          style={{ background: 'rgba(30,41,59,0.8)', backdropFilter: 'blur(20px)', borderColor: 'rgba(255,255,255,0.1)' }}>
+        <div className="rounded-2xl border"
+          style={{
+            background: 'rgba(30,41,59,0.8)',
+            backdropFilter: 'blur(20px)',
+            borderColor: 'rgba(255,255,255,0.1)',
+            padding: '2rem',
+          }}>
           <h2 className="text-xl font-semibold text-white mb-6">Sign in to your account</h2>
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin} className="flex flex-col gap-4" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-1.5">Email</label>
               <input
@@ -108,8 +113,7 @@ export default function LoginPage() {
               id="login-btn"
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 rounded-xl font-semibold text-white flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
-              style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}
+              className="btn-primary w-full py-3 flex items-center justify-center gap-2"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
               {loading ? 'Signing in...' : 'Sign In'}
