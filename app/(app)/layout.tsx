@@ -31,7 +31,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             className="flex-1 lg:pb-6"
             style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 88px)' }}
           >
-            <div className="w-full max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 lg:py-6">
+            <div className="w-full max-w-7xl mx-auto px-5 py-4 sm:px-6 lg:px-8 lg:py-6">
               {children}
             </div>
           </main>
