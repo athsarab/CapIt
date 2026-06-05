@@ -19,7 +19,7 @@ function GoalCard({ goal, onDelete, onEdit, currencySymbol }: {
   const offset = circumference - (pct / 100) * circumference;
 
   return (
-    <div className={cn('card rounded-2xl p-5 animate-fade-in relative overflow-hidden', goal.is_completed && 'border-2')}
+    <div className={cn('card rounded-2xl p-5 animate-fade-in relative overflow-hidden', goal.is_completed && 'border')}
       style={{ borderColor: goal.is_completed ? goal.color : undefined }}>
       {goal.is_completed && (
         <div className="absolute top-3 right-3">
@@ -30,29 +30,29 @@ function GoalCard({ goal, onDelete, onEdit, currencySymbol }: {
       <div className="flex items-center gap-4">
         {/* Ring */}
         <div className="relative flex-shrink-0">
-          <svg width="88" height="88" viewBox="0 0 88 88">
-            <circle cx="44" cy="44" r="36" fill="none" stroke="var(--border)" strokeWidth="7" />
-            <circle cx="44" cy="44" r="36" fill="none" stroke={goal.color} strokeWidth="7"
+          <svg width="80" height="80" viewBox="0 0 88 88">
+            <circle cx="44" cy="44" r="36" fill="none" stroke="var(--border)" strokeWidth="5" />
+            <circle cx="44" cy="44" r="36" fill="none" stroke={goal.color} strokeWidth="5"
               strokeDasharray={circumference} strokeDashoffset={offset}
               strokeLinecap="round" transform="rotate(-90 44 44)"
               style={{ transition: 'stroke-dashoffset 0.8s ease' }} />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-base font-bold" style={{ color: 'var(--foreground)' }}>{pct.toFixed(0)}%</span>
+            <span className="text-sm font-bold" style={{ color: 'var(--foreground)' }}>{pct.toFixed(0)}%</span>
           </div>
         </div>
 
         {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <CategoryIcon icon={goal.icon} color={goal.color} size={16} />
+            <CategoryIcon icon={goal.icon} color={goal.color} size={15} />
             <h3 className="text-sm font-bold truncate" style={{ color: 'var(--foreground)' }}>{goal.name}</h3>
           </div>
           <p className="text-xs mb-2" style={{ color: 'var(--muted-foreground)' }}>
             {formatCurrency(goal.current_amount, currencySymbol)} of {formatCurrency(goal.target_amount, currencySymbol)}
           </p>
           {goal.target_date && (
-            <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>🎯 Target: {formatDate(goal.target_date)}</p>
+            <p className="text-[10px]" style={{ color: 'var(--muted-foreground)' }}>🎯 Target: {formatDate(goal.target_date)}</p>
           )}
           <div className="progress-bar mt-2">
             <div className="progress-fill" style={{ width: `${pct}%`, background: goal.color }} />
@@ -63,12 +63,12 @@ function GoalCard({ goal, onDelete, onEdit, currencySymbol }: {
       {/* Actions */}
       <div className="flex gap-2 mt-4 pt-3 border-t" style={{ borderColor: 'var(--border)' }}>
         <button onClick={() => onEdit(goal)}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
           style={{ color: 'var(--muted-foreground)' }}>
           <Pencil className="w-3.5 h-3.5" /> Edit / Add Funds
         </button>
         <button onClick={() => onDelete(goal.id)}
-          className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
+          className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
           <Trash2 className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -143,75 +143,80 @@ export default function SavingsPage() {
   const completed = savingsGoals.filter(g => g.is_completed).length;
 
   return (
-    <div className="space-y-5 max-w-3xl">
+    <div className="flex flex-col gap-5 max-w-3xl">
       <div className="flex items-center justify-between animate-fade-in">
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--foreground)' }}>Savings Goals</h1>
+        <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--foreground)' }}>Savings Goals</h1>
         <button id="add-goal-btn" onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 active:scale-[0.97]"
-          style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}>
+          className="btn-primary flex items-center gap-2 !px-4 !py-2.5 text-sm">
           <Plus className="w-4 h-4" /> New Goal
         </button>
       </div>
 
       {/* Summary */}
       <div className="grid grid-cols-3 gap-3 animate-fade-in">
-        <div className="card rounded-xl p-3 text-center">
-          <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>Goals</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: 'var(--foreground)' }}>{savingsGoals.length}</p>
+        <div className="card rounded-2xl p-3 text-center">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Goals</p>
+          <p className="text-sm font-extrabold mt-1" style={{ color: 'var(--foreground)' }}>{savingsGoals.length}</p>
         </div>
-        <div className="card rounded-xl p-3 text-center">
-          <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>Saved</p>
-          <p className="text-base font-bold mt-1 text-green-500">{formatCurrency(totalSaved, currencySymbol)}</p>
+        <div className="card rounded-2xl p-3 text-center">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Saved</p>
+          <p className="text-sm font-extrabold mt-1 text-emerald-500">{formatCurrency(totalSaved, currencySymbol)}</p>
         </div>
-        <div className="card rounded-xl p-3 text-center">
-          <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>Completed</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: '#6366f1' }}>{completed}</p>
+        <div className="card rounded-2xl p-3 text-center">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Completed</p>
+          <p className="text-sm font-extrabold mt-1 text-indigo-500 dark:text-indigo-400">{completed}</p>
         </div>
       </div>
 
       {/* Form */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="card rounded-2xl p-5 space-y-4 animate-scale-in">
-          <h3 className="font-semibold" style={{ color: 'var(--foreground)' }}>
+        <form onSubmit={handleSubmit} className="card rounded-2xl p-5 flex flex-col gap-4 animate-scale-in">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
             {editGoal ? 'Edit Goal / Add Funds' : 'New Savings Goal'}
           </h3>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
-              <label className="block text-xs font-medium mb-1" style={{ color: 'var(--muted-foreground)' }}>Goal Name</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Goal Name</label>
               <input id="goal-name" value={name} onChange={e => setName(e.target.value)} required placeholder="e.g. New Phone"
-                className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none"
+                className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none transition-all"
                 style={{ background: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--foreground)' }} />
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1" style={{ color: 'var(--muted-foreground)' }}>Target Amount (Rs.)</label>
-              <input id="goal-target" type="number" step="0.01" min="0" value={targetAmount} onChange={e => setTargetAmount(e.target.value)} required
-                className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none"
-                style={{ background: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--foreground)' }} />
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Target Amount (LKR)</label>
+              <div className="flex items-center rounded-xl border border-[var(--border)] bg-[var(--muted)] transition-all duration-200 focus-within:border-indigo-500 focus-within:bg-[var(--card)] focus-within:ring-2 focus-within:ring-indigo-500/15">
+                <span className="pl-3 pr-1.5 text-xs font-bold text-slate-400 dark:text-slate-500 select-none">Rs.</span>
+                <input id="goal-target" type="number" step="0.01" min="0" value={targetAmount} onChange={e => setTargetAmount(e.target.value)} placeholder="0.00" required
+                  className="w-full pr-3 py-2 bg-transparent text-sm outline-none border-0 focus:ring-0 focus:!ring-0 focus:!border-0 focus:!border-transparent focus:!bg-transparent focus:!shadow-none"
+                  style={{ color: 'var(--foreground)' }} />
+              </div>
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1" style={{ color: 'var(--muted-foreground)' }}>Saved So Far (Rs.)</label>
-              <input id="goal-current" type="number" step="0.01" min="0" value={currentAmount} onChange={e => setCurrentAmount(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none"
-                style={{ background: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--foreground)' }} />
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Saved So Far (LKR)</label>
+              <div className="flex items-center rounded-xl border border-[var(--border)] bg-[var(--muted)] transition-all duration-200 focus-within:border-indigo-500 focus-within:bg-[var(--card)] focus-within:ring-2 focus-within:ring-indigo-500/15">
+                <span className="pl-3 pr-1.5 text-xs font-bold text-slate-400 dark:text-slate-500 select-none">Rs.</span>
+                <input id="goal-current" type="number" step="0.01" min="0" value={currentAmount} onChange={e => setCurrentAmount(e.target.value)} placeholder="0.00"
+                  className="w-full pr-3 py-2 bg-transparent text-sm outline-none border-0 focus:ring-0 focus:!ring-0 focus:!border-0 focus:!border-transparent focus:!bg-transparent focus:!shadow-none"
+                  style={{ color: 'var(--foreground)' }} />
+              </div>
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1" style={{ color: 'var(--muted-foreground)' }}>Target Date (optional)</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Target Date (optional)</label>
               <input id="goal-date" type="date" value={targetDate} onChange={e => setTargetDate(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none"
+                className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none transition-all"
                 style={{ background: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--foreground)' }} />
             </div>
           </div>
 
           {/* Icon picker */}
           <div>
-            <label className="block text-xs font-medium mb-2" style={{ color: 'var(--muted-foreground)' }}>Icon</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Icon</label>
             <div className="flex gap-2 flex-wrap">
               {SAVINGS_GOAL_ICONS.map(({ icon: ic, label }) => (
                 <button key={ic} type="button"
                   onClick={() => setIcon(ic)}
-                  className={cn('w-10 h-10 rounded-xl flex items-center justify-center border transition-all')}
-                  style={{ borderColor: icon === ic ? color : 'var(--border)', background: icon === ic ? `${color}20` : 'var(--muted)' }}
+                  className={cn('w-10 h-10 rounded-xl flex items-center justify-center border transition-all duration-150')}
+                  style={{ borderColor: icon === ic ? color : 'var(--border)', background: icon === ic ? `${color}15` : 'var(--muted)' }}
                   title={label}>
                   <CategoryIcon icon={ic} color={icon === ic ? color : 'var(--muted-foreground)'} size={18} />
                 </button>
@@ -221,23 +226,21 @@ export default function SavingsPage() {
 
           {/* Color picker */}
           <div>
-            <label className="block text-xs font-medium mb-2" style={{ color: 'var(--muted-foreground)' }}>Color</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Color</label>
             <div className="flex gap-2 flex-wrap">
               {GOAL_COLORS.map(c => (
                 <button key={c} type="button" onClick={() => setColor(c)}
-                  className={cn('w-8 h-8 rounded-full border-2 transition-all', color === c ? 'scale-125' : 'border-transparent')}
-                  style={{ background: c, borderColor: color === c ? 'white' : 'transparent' }} />
+                  className={cn('w-7 h-7 rounded-full border border-transparent transition-all duration-150', color === c ? 'scale-110 shadow-sm border-slate-400 dark:border-slate-200' : '')}
+                  style={{ background: c }} />
               ))}
             </div>
           </div>
 
           <div className="flex gap-3">
             <button type="button" onClick={resetForm}
-              className="flex-1 py-2.5 rounded-xl text-sm font-medium border"
-              style={{ borderColor: 'var(--border)', color: 'var(--muted-foreground)' }}>Cancel</button>
+              className="btn-secondary flex-1 !py-2.5 text-sm">Cancel</button>
             <button id="save-goal-btn" type="submit" disabled={loading}
-              className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
-              style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}>
+              className="btn-primary flex-1 !py-2.5 text-sm flex items-center justify-center gap-2">
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               {loading ? 'Saving...' : editGoal ? 'Update Goal' : 'Create Goal'}
             </button>

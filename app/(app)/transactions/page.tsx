@@ -57,15 +57,14 @@ export default function TransactionsPage() {
   const totalExpense = filtered.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
 
   return (
-    <div className="space-y-4 max-w-3xl">
+    <div className="flex flex-col gap-4 max-w-3xl">
       {/* Header */}
       <div className="flex items-center justify-between animate-fade-in">
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--foreground)' }}>Transactions</h1>
+        <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--foreground)' }}>Transactions</h1>
         <Link
           href="/transactions/new"
           id="add-transaction-btn"
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white shadow-lg transition-all hover:opacity-90 active:scale-[0.97]"
-          style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white shadow-md transition-all hover:opacity-95 active:scale-[0.97] bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-500 dark:to-violet-500"
         >
           <Plus className="w-4 h-4" /> Add
         </Link>
@@ -73,26 +72,26 @@ export default function TransactionsPage() {
 
       {/* Summary strip */}
       <div className="grid grid-cols-2 gap-3 animate-fade-in">
-        <div className="card rounded-xl p-3 flex items-center gap-3">
-          <ArrowUpCircle className="w-8 h-8 text-green-500 flex-shrink-0" />
+        <div className="card rounded-2xl p-3 flex items-center gap-3">
+          <ArrowUpCircle className="w-7 h-7 text-emerald-500 flex-shrink-0" />
           <div>
-            <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>Income</p>
-            <p className="text-sm font-bold text-green-500">{formatCurrency(totalIncome, currencySymbol)}</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Income</p>
+            <p className="text-sm font-bold text-emerald-500">{formatCurrency(totalIncome, currencySymbol)}</p>
           </div>
         </div>
-        <div className="card rounded-xl p-3 flex items-center gap-3">
-          <ArrowDownCircle className="w-8 h-8 text-red-500 flex-shrink-0" />
+        <div className="card rounded-2xl p-3 flex items-center gap-3">
+          <ArrowDownCircle className="w-7 h-7 text-rose-500 flex-shrink-0" />
           <div>
-            <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>Expenses</p>
-            <p className="text-sm font-bold text-red-500">{formatCurrency(totalExpense, currencySymbol)}</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Expenses</p>
+            <p className="text-sm font-bold text-rose-500">{formatCurrency(totalExpense, currencySymbol)}</p>
           </div>
         </div>
       </div>
 
       {/* Search & Filter */}
-      <div className="card rounded-2xl p-4 space-y-3 animate-fade-in">
+      <div className="card rounded-2xl p-4 flex flex-col gap-3 animate-fade-in">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--muted-foreground)' }} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
           <input
             id="transaction-search"
             type="text"
@@ -109,8 +108,12 @@ export default function TransactionsPage() {
               key={type}
               id={`filter-${type}`}
               onClick={() => setTypeFilter(type)}
-              className={cn('px-3 py-1.5 rounded-lg text-xs font-medium transition-all capitalize', typeFilter === type ? 'text-white' : '')}
-              style={typeFilter === type ? { background: '#6366f1' } : { background: 'var(--muted)', color: 'var(--muted-foreground)' }}
+              className={cn(
+                'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize border',
+                typeFilter === type 
+                  ? 'bg-indigo-600 dark:bg-indigo-500 text-white border-transparent shadow-sm' 
+                  : 'bg-slate-50 hover:bg-slate-100 dark:bg-[#161824] dark:hover:bg-[#1e202f] border-slate-100 dark:border-slate-800/80 text-slate-500 dark:text-slate-400'
+              )}
             >
               {type === 'all' ? 'All' : type === 'income' ? '↑ Income' : '↓ Expense'}
             </button>
@@ -120,8 +123,7 @@ export default function TransactionsPage() {
             id="category-filter"
             value={categoryFilter}
             onChange={e => setCategoryFilter(e.target.value)}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium border outline-none"
-            style={{ background: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold border outline-none bg-slate-50 dark:bg-[#161824] border-slate-100 dark:border-slate-800/80 text-slate-500 dark:text-slate-400"
           >
             <option value="all">All Categories</option>
             {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -130,7 +132,7 @@ export default function TransactionsPage() {
       </div>
 
       {/* Transaction list */}
-      <div className="space-y-4 animate-fade-in">
+      <div className="flex flex-col gap-4 animate-fade-in">
         {grouped.length === 0 ? (
           <div className="card rounded-2xl p-12 text-center">
             <p className="text-base font-semibold mb-1" style={{ color: 'var(--foreground)' }}>No transactions found</p>

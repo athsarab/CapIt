@@ -54,23 +54,23 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="space-y-5 max-w-4xl">
+    <div className="flex flex-col gap-5 max-w-4xl">
       <div className="animate-fade-in">
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--foreground)' }}>Analytics</h1>
-        <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>{getMonthName(month)} {year} overview</p>
+        <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--foreground)' }}>Analytics</h1>
+        <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>{getMonthName(month)} {year} overview</p>
       </div>
 
       {/* Summary strip */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 animate-fade-in">
         {[
-          { label: 'Income', value: summary.totalIncome, color: '#22c55e' },
+          { label: 'Income', value: summary.totalIncome, color: '#10b981' },
           { label: 'Expenses', value: summary.totalExpenses, color: '#ef4444' },
           { label: 'Balance', value: summary.balance, color: '#6366f1' },
           { label: 'Savings Rate', value: summary.totalIncome > 0 ? (summary.savings / summary.totalIncome * 100) : 0, color: '#0ea5e9', isPercent: true },
         ].map(({ label, value, color, isPercent }) => (
-          <div key={label} className="card rounded-xl p-3 text-center">
-            <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>{label}</p>
-            <p className="text-base font-bold mt-1" style={{ color }}>
+          <div key={label} className="card rounded-2xl p-3 text-center">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{label}</p>
+            <p className="text-sm font-extrabold mt-1" style={{ color }}>
               {isPercent ? `${value.toFixed(1)}%` : formatCurrency(value, currencySymbol)}
             </p>
           </div>
@@ -78,13 +78,17 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="animate-fade-in">
-        <div className="flex gap-1 p-1 rounded-xl overflow-x-auto" style={{ background: 'var(--muted)' }}>
+      <div className="animate-fade-in my-2">
+        <div className="flex gap-1.5 p-1.5 rounded-xl overflow-x-auto bg-slate-100/80 dark:bg-slate-900/50 no-scrollbar">
           {tabs.map(tab => (
             <button key={tab.id} id={`analytics-tab-${tab.id}`}
               onClick={() => setActiveTab(tab.id)}
-              className={cn('flex-shrink-0 px-4 py-2.5 rounded-lg text-xs font-semibold transition-all', activeTab === tab.id ? 'text-white shadow-md' : '')}
-              style={activeTab === tab.id ? { background: '#6366f1' } : { color: 'var(--muted-foreground)' }}>
+              className={cn(
+                'flex-shrink-0 px-4 py-2.5 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95', 
+                activeTab === tab.id 
+                  ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 dark:from-indigo-500 dark:to-indigo-600 text-white shadow-md shadow-indigo-500/20' 
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-slate-800/40'
+              )}>
               {tab.label}
             </button>
           ))}
@@ -95,7 +99,7 @@ export default function AnalyticsPage() {
       <div className="card rounded-2xl p-5 animate-fade-in">
         {activeTab === 'spending' && (
           <>
-            <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--muted-foreground)' }}>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">
               Spending by Category – {getMonthName(month)} {year}
             </h3>
             {categorySpending.length === 0 ? (
@@ -108,7 +112,7 @@ export default function AnalyticsPage() {
                       dataKey="amount" paddingAngle={3} nameKey="name">
                       {categorySpending.map((e, i) => <Cell key={i} fill={e.color} />)}
                     </Pie>
-                    <Tooltip formatter={(v: number) => [totalLabel(v), 'Amount']}
+                    <Tooltip formatter={(v: any) => [totalLabel(Number(v) || 0), 'Amount']}
                       contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', fontSize: 12 }} />
                   </PieChart>
                 </ResponsiveContainer>
@@ -129,18 +133,18 @@ export default function AnalyticsPage() {
 
         {activeTab === 'trend' && (
           <>
-            <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--muted-foreground)' }}>Income vs Expenses (12 months)</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">Income vs Expenses (12 months)</h3>
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={monthlyData} barSize={12} barGap={4}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                 <XAxis dataKey="month" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false}
                   tickFormatter={v => `${(v / 1000).toFixed(0)}K`} width={40} />
-                <Tooltip formatter={(v: number) => [totalLabel(v), '']}
+                <Tooltip formatter={(v: any) => [totalLabel(Number(v) || 0), '']}
                   contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', fontSize: 12 }}
                   labelStyle={{ color: 'var(--foreground)', fontWeight: 600 }} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Bar dataKey="income" fill="#22c55e" radius={[4, 4, 0, 0]} name="Income" />
+                <Bar dataKey="income" fill="#10b981" radius={[4, 4, 0, 0]} name="Income" />
                 <Bar dataKey="expenses" fill="#ef4444" radius={[4, 4, 0, 0]} name="Expenses" />
               </BarChart>
             </ResponsiveContainer>
@@ -149,7 +153,7 @@ export default function AnalyticsPage() {
 
         {activeTab === 'savings' && (
           <>
-            <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--muted-foreground)' }}>Savings Trend (12 months)</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">Savings Trend (12 months)</h3>
             <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={monthlyData}>
                 <defs>
@@ -162,7 +166,7 @@ export default function AnalyticsPage() {
                 <XAxis dataKey="month" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false}
                   tickFormatter={v => `${(v / 1000).toFixed(0)}K`} width={40} />
-                <Tooltip formatter={(v: number) => [totalLabel(v), 'Savings']}
+                <Tooltip formatter={(v: any) => [totalLabel(Number(v) || 0), 'Savings']}
                   contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', fontSize: 12 }} />
                 <Area type="monotone" dataKey="savings" stroke="#6366f1" strokeWidth={2.5} fill="url(#savingsGrad)" dot={{ fill: '#6366f1', r: 4 }} name="Savings" />
               </AreaChart>
@@ -172,7 +176,7 @@ export default function AnalyticsPage() {
 
         {activeTab === 'comparison' && (
           <>
-            <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--muted-foreground)' }}>Category Spending Comparison</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">Category Spending Comparison</h3>
             {categorySpending.length === 0 ? (
               <p className="text-center py-16 text-sm" style={{ color: 'var(--muted-foreground)' }}>No expense data for this month</p>
             ) : (
@@ -182,7 +186,7 @@ export default function AnalyticsPage() {
                   <XAxis type="number" tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false}
                     tickFormatter={v => `${(v / 1000).toFixed(0)}K`} />
                   <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} width={90} />
-                  <Tooltip formatter={(v: number) => [totalLabel(v), 'Spent']}
+                  <Tooltip formatter={(v: any) => [totalLabel(Number(v) || 0), 'Spent']}
                     contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', fontSize: 12 }} />
                   <Bar dataKey="amount" radius={[0, 4, 4, 0]} name="Amount">
                     {categorySpending.map((e, i) => <Cell key={i} fill={e.color} />)}

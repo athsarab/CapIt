@@ -91,25 +91,24 @@ export default function RecurringPage() {
     .reduce((s, r) => s + r.amount, 0);
 
   return (
-    <div className="space-y-5 max-w-3xl">
+    <div className="flex flex-col gap-5 max-w-3xl">
       <div className="flex items-center justify-between animate-fade-in">
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--foreground)' }}>Recurring Expenses</h1>
+        <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--foreground)' }}>Recurring Expenses</h1>
         <button id="add-recurring-btn" onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white shadow-lg hover:opacity-90 active:scale-[0.97]"
-          style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}>
+          className="btn-primary flex items-center gap-2 !px-4 !py-2.5 text-sm">
           <Plus className="w-4 h-4" /> Add
         </button>
       </div>
 
       {/* Summary */}
       <div className="grid grid-cols-2 gap-3 animate-fade-in">
-        <div className="card rounded-xl p-4">
-          <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>Active Recurring</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: 'var(--foreground)' }}>{active.length}</p>
+        <div className="card rounded-2xl p-3 text-center">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Active Recurring</p>
+          <p className="text-sm font-extrabold mt-1" style={{ color: 'var(--foreground)' }}>{active.length}</p>
         </div>
-        <div className="card rounded-xl p-4">
-          <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>Monthly Commitment</p>
-          <p className="text-lg font-bold mt-1 text-indigo-500">{formatCurrency(totalMonthly, currencySymbol)}</p>
+        <div className="card rounded-2xl p-3 text-center">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Monthly Commitment</p>
+          <p className="text-sm font-extrabold mt-1 text-indigo-500 dark:text-indigo-400">{formatCurrency(totalMonthly, currencySymbol)}</p>
         </div>
       </div>
 
@@ -118,14 +117,13 @@ export default function RecurringPage() {
         <div className="card rounded-2xl p-4 animate-fade-in">
           <div className="flex items-center gap-2 mb-3">
             <Zap className="w-4 h-4 text-indigo-500" />
-            <span className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>Quick Templates</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Quick Templates</span>
           </div>
           <div className="flex gap-2 flex-wrap">
             {RECURRING_TEMPLATES.map(tmpl => (
               <button key={tmpl.description} id={`rec-tmpl-${tmpl.description.replace(/\s/g, '-').toLowerCase()}`}
                 onClick={() => applyTemplate(tmpl)}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium border hover:border-indigo-400 transition-all"
-                style={{ borderColor: 'var(--border)', background: 'var(--muted)', color: 'var(--foreground)' }}>
+                className="px-3 py-1.5 rounded-lg text-xs font-semibold border bg-slate-50 hover:bg-slate-100 dark:bg-[#161824] dark:hover:bg-[#1e202f] border-slate-100 dark:border-slate-800/80 text-slate-500 dark:text-slate-400 transition-colors">
                 {tmpl.description}
               </button>
             ))}
@@ -135,63 +133,78 @@ export default function RecurringPage() {
 
       {/* Form */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="card rounded-2xl p-5 space-y-4 animate-scale-in">
-          <h3 className="font-semibold" style={{ color: 'var(--foreground)' }}>New Recurring Expense</h3>
+        <form onSubmit={handleSubmit} className="card rounded-2xl p-5 flex flex-col gap-4 animate-scale-in">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">New Recurring Expense</h3>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium mb-1" style={{ color: 'var(--muted-foreground)' }}>Description</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Description</label>
               <input id="rec-description" value={description} onChange={e => setDescription(e.target.value)} required placeholder="e.g. Rent"
-                className="w-full px-3 py-2.5 rounded-xl text-sm border outline-none"
+                className="w-full px-3 py-2.5 rounded-xl text-sm border outline-none transition-all"
                 style={{ background: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--foreground)' }} />
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1" style={{ color: 'var(--muted-foreground)' }}>Amount (Rs.)</label>
-              <input id="rec-amount" type="number" step="0.01" min="0" value={amount} onChange={e => setAmount(e.target.value)} required
-                className="w-full px-3 py-2.5 rounded-xl text-sm border outline-none"
-                style={{ background: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--foreground)' }} />
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Amount (LKR)</label>
+              <div className="flex items-center rounded-xl border border-[var(--border)] bg-[var(--muted)] transition-all duration-200 focus-within:border-indigo-500 focus-within:bg-[var(--card)] focus-within:ring-2 focus-within:ring-indigo-500/15">
+                <span className="pl-4 pr-2 font-bold text-slate-400 dark:text-slate-500 select-none">Rs.</span>
+                <input id="rec-amount" type="number" step="0.01" min="0" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" required
+                  className="w-full pr-4 py-3 bg-transparent text-sm outline-none border-0 focus:ring-0 focus:!ring-0 focus:!border-0 focus:!border-transparent focus:!bg-transparent focus:!shadow-none"
+                  style={{ color: 'var(--foreground)' }} />
+              </div>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium mb-1" style={{ color: 'var(--muted-foreground)' }}>Frequency</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Frequency</label>
               <select id="rec-frequency" value={frequency} onChange={e => setFrequency(e.target.value as RecurringFrequency)}
-                className="w-full px-3 py-2.5 rounded-xl text-sm border outline-none"
-                style={{ background: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--foreground)' }}>
+                className="w-full px-3 py-2.5 rounded-xl text-sm border outline-none bg-slate-50 dark:bg-[#161824] text-slate-500 dark:text-slate-400"
+                style={{ borderColor: 'var(--border)' }}>
                 {Object.entries(FREQ_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1" style={{ color: 'var(--muted-foreground)' }}>Start Date</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Start Date</label>
               <input id="rec-start-date" type="date" value={startDate} onChange={e => setStartDate(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl text-sm border outline-none"
+                className="w-full px-3 py-2.5 rounded-xl text-sm border outline-none transition-all"
                 style={{ background: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--foreground)' }} />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium mb-2" style={{ color: 'var(--muted-foreground)' }}>Category</label>
-            <div className="grid grid-cols-4 gap-2">
-              {expenseCategories.slice(0, 12).map(cat => (
-                <button key={cat.id} type="button"
-                  onClick={() => setCategoryId(cat.id)}
-                  className={cn('flex flex-col items-center gap-1 p-2 rounded-xl border transition-all')}
-                  style={{ borderColor: categoryId === cat.id ? cat.color : 'var(--border)', background: categoryId === cat.id ? `${cat.color}18` : 'var(--muted)' }}>
-                  <CategoryIcon icon={cat.icon} color={cat.color} size={14} />
-                  <span className="text-[9px] text-center leading-tight" style={{ color: 'var(--foreground)' }}>{cat.name}</span>
-                </button>
-              ))}
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Category</label>
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+              {expenseCategories.slice(0, 12).map(cat => {
+                const isSelected = categoryId === cat.id;
+                return (
+                  <button key={cat.id} type="button"
+                    onClick={() => setCategoryId(cat.id)}
+                    className={cn(
+                      'flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all duration-150',
+                      isSelected 
+                        ? 'shadow-sm' 
+                        : 'border-slate-100 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700'
+                    )}
+                    style={{
+                      background: isSelected ? `${cat.color}15` : 'var(--muted)',
+                      borderColor: isSelected ? cat.color : '',
+                    }}>
+                    <CategoryIcon icon={cat.icon} color={isSelected ? cat.color : 'var(--muted-foreground)'} size={14} />
+                    <span className="text-[10px] font-semibold text-center leading-tight transition-colors duration-150"
+                      style={{ color: isSelected ? cat.color : 'var(--foreground)' }}>
+                      {cat.name}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           <div className="flex gap-3">
             <button type="button" onClick={() => setShowForm(false)}
-              className="flex-1 py-2.5 rounded-xl text-sm font-medium border transition-all"
-              style={{ borderColor: 'var(--border)', color: 'var(--muted-foreground)' }}>Cancel</button>
+              className="btn-secondary flex-1 !py-2.5 text-sm">Cancel</button>
             <button id="save-recurring-btn" type="submit" disabled={loading}
-              className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2 hover:opacity-90"
-              style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}>
+              className="btn-primary flex-1 !py-2.5 text-sm flex items-center justify-center gap-2">
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               {loading ? 'Saving...' : 'Save'}
             </button>
@@ -200,7 +213,7 @@ export default function RecurringPage() {
       )}
 
       {/* Recurring list */}
-      <div className="space-y-3 animate-fade-in">
+      <div className="flex flex-col gap-3 animate-fade-in">
         {[...active, ...inactive].map(r => {
           const cat = r.category;
           const dueDate = new Date(r.next_due_date);

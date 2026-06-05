@@ -9,34 +9,6 @@ import Link from 'next/link';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { cn } from '@/lib/utils/cn';
 
-function SummaryCard({
-  label, value, icon: Icon, gradient, trend, trendValue, delay = '0ms'
-}: {
-  label: string; value: string; icon: React.ElementType;
-  gradient: string; trend?: 'up' | 'down'; trendValue?: string; delay?: string;
-}) {
-  return (
-    <div className="rounded-2xl p-5 text-white shadow-lg animate-fade-in flex flex-col gap-3 relative overflow-hidden"
-      style={{ background: gradient, animationDelay: delay }}>
-      <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10"
-        style={{ background: 'rgba(255,255,255,0.5)', transform: 'translate(30%, -30%)' }} />
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-medium opacity-80">{label}</span>
-        <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
-          <Icon className="w-5 h-5" />
-        </div>
-      </div>
-      <p className="text-2xl font-bold">{value}</p>
-      {trend && trendValue && (
-        <div className="flex items-center gap-1 text-xs opacity-80">
-          {trend === 'up' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-          {trendValue} this month
-        </div>
-      )}
-    </div>
-  );
-}
-
 function HealthScoreCard({ score }: { score: number }) {
   const { label, color, description } = getHealthLabel(score);
   const circumference = 2 * Math.PI * 40;
@@ -44,14 +16,14 @@ function HealthScoreCard({ score }: { score: number }) {
 
   return (
     <div className="card p-5 rounded-2xl animate-fade-in delay-300">
-      <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--muted-foreground)' }}>Financial Health</h3>
+      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">Financial Health</h3>
       <div className="flex items-center gap-6">
         <div className="relative flex-shrink-0">
-          <svg width="100" height="100" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="var(--border)" strokeWidth="8" />
+          <svg width="90" height="90" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="var(--border)" strokeWidth="5" />
             <circle
               cx="50" cy="50" r="40" fill="none"
-              stroke={color} strokeWidth="8"
+              stroke={color} strokeWidth="5"
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}
               strokeLinecap="round"
@@ -60,13 +32,13 @@ function HealthScoreCard({ score }: { score: number }) {
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-2xl font-bold" style={{ color: 'var(--foreground)' }}>{score}</span>
-            <span className="text-[10px]" style={{ color: 'var(--muted-foreground)' }}>/ 100</span>
+            <span className="text-xl font-bold" style={{ color: 'var(--foreground)' }}>{score}</span>
+            <span className="text-[9px]" style={{ color: 'var(--muted-foreground)' }}>/ 100</span>
           </div>
         </div>
         <div>
-          <p className="text-lg font-bold" style={{ color }}>{label}</p>
-          <p className="text-sm mt-1" style={{ color: 'var(--muted-foreground)' }}>{description}</p>
+          <p className="text-base font-bold" style={{ color }}>{label}</p>
+          <p className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>{description}</p>
         </div>
       </div>
     </div>
@@ -79,10 +51,11 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
+      <div className="flex flex-col gap-5">
         <div className="h-8 skeleton w-48 mb-6" />
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => <div key={i} className="h-32 skeleton rounded-2xl" />)}
+        <div className="h-36 skeleton rounded-2xl" />
+        <div className="grid grid-cols-3 gap-3">
+          {[...Array(3)].map((_, i) => <div key={i} className="h-20 skeleton rounded-2xl" />)}
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="h-64 skeleton rounded-2xl lg:col-span-2" />
@@ -110,55 +83,96 @@ export default function DashboardPage() {
   });
 
   return (
-    <div className="space-y-5 max-w-7xl">
+    <div className="flex flex-col gap-5 max-w-7xl">
       {/* Heading */}
-      <div className="animate-fade-in">
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--foreground)' }}>Dashboard</h1>
-        <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
-          {new Date().toLocaleDateString('en-LK', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-        </p>
+      <div className="animate-fade-in flex flex-col md:flex-row md:items-center md:justify-between gap-1">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--foreground)' }}>Dashboard</h1>
+          <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
+            {new Date().toLocaleDateString('en-LK', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+          </p>
+        </div>
       </div>
 
       {/* Recurring alert */}
       {overdueDue.length > 0 && (
-        <div className="flex items-center gap-3 p-4 rounded-xl border animate-fade-in"
-          style={{ background: 'rgba(239,68,68,0.08)', borderColor: 'rgba(239,68,68,0.3)' }}>
-          <AlertCircle className="w-5 h-5 flex-shrink-0" style={{ color: '#ef4444' }} />
-          <p className="text-sm" style={{ color: 'var(--foreground)' }}>
-            <span className="font-semibold">{overdueDue.length} recurring expense{overdueDue.length > 1 ? 's' : ''}</span> were auto-added today.
+        <div className="flex items-center gap-3 p-4 rounded-xl border animate-fade-in bg-rose-500/5 dark:bg-rose-500/10"
+          style={{ borderColor: 'rgba(239,68,68,0.2)' }}>
+          <AlertCircle className="w-5 h-5 flex-shrink-0 text-rose-500" />
+          <p className="text-xs font-medium" style={{ color: 'var(--foreground)' }}>
+            <span className="font-bold">{overdueDue.length} recurring expense{overdueDue.length > 1 ? 's' : ''}</span> was auto-added today.
           </p>
         </div>
       )}
 
-      {/* Summary cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <SummaryCard
-          label="Income" value={formatCompact(summary.totalIncome, currencySymbol)}
-          icon={TrendingUp} gradient="linear-gradient(135deg, #22c55e, #16a34a)"
-          delay="0ms"
-        />
-        <SummaryCard
-          label="Expenses" value={formatCompact(summary.totalExpenses, currencySymbol)}
-          icon={TrendingDown} gradient="linear-gradient(135deg, #ef4444, #dc2626)"
-          delay="100ms"
-        />
-        <SummaryCard
-          label="Balance" value={formatCompact(summary.balance, currencySymbol)}
-          icon={Wallet} gradient="linear-gradient(135deg, #6366f1, #8b5cf6)"
-          delay="200ms"
-        />
-        <SummaryCard
-          label="Savings" value={formatCompact(summary.savings, currencySymbol)}
-          icon={PiggyBank} gradient="linear-gradient(135deg, #0ea5e9, #0284c7)"
-          delay="300ms"
-        />
+      {/* Main Available Balance Card */}
+      <div className="card rounded-2xl p-6 relative overflow-hidden bg-gradient-to-br from-slate-900 to-indigo-950 dark:from-slate-950 dark:to-zinc-950 text-white shadow-xl animate-fade-in border-0">
+        <div className="absolute top-[-20%] right-[-10%] w-64 h-64 rounded-full opacity-20 bg-indigo-500 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-48 h-48 rounded-full opacity-10 bg-purple-500 blur-3xl pointer-events-none" />
+        
+        <div className="relative flex flex-col gap-1.5">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-200/60">Available Balance</span>
+          <p className="text-3xl font-extrabold tracking-tight md:text-4xl text-white">
+            {formatCurrency(summary.balance, currencySymbol)}
+          </p>
+          <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/10 text-xs text-indigo-200/70">
+            <span>Financial Health:</span>
+            <span className={cn(
+              "font-bold px-2 py-0.5 rounded-full text-[9px]",
+              summary.healthScore >= 70 ? "bg-emerald-500/20 text-emerald-400" :
+              summary.healthScore >= 40 ? "bg-amber-500/20 text-amber-400" :
+              "bg-rose-500/20 text-rose-400"
+            )}>
+              {summary.healthScore} / 100
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Grid of secondary statistics */}
+      <div className="grid grid-cols-3 gap-3 animate-fade-in delay-100">
+        <div className="card rounded-2xl p-3 flex flex-col gap-1">
+          <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+            <div className="w-5 h-5 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 flex-shrink-0">
+              <TrendingUp className="w-3.5 h-3.5" />
+            </div>
+            <span className="text-[10px] font-semibold tracking-wider uppercase">Income</span>
+          </div>
+          <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
+            {formatCompact(summary.totalIncome, currencySymbol)}
+          </p>
+        </div>
+
+        <div className="card rounded-2xl p-3 flex flex-col gap-1">
+          <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+            <div className="w-5 h-5 rounded-full bg-rose-500/10 flex items-center justify-center text-rose-500 flex-shrink-0">
+              <TrendingDown className="w-3.5 h-3.5" />
+            </div>
+            <span className="text-[10px] font-semibold tracking-wider uppercase">Expenses</span>
+          </div>
+          <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
+            {formatCompact(summary.totalExpenses, currencySymbol)}
+          </p>
+        </div>
+
+        <div className="card rounded-2xl p-3 flex flex-col gap-1">
+          <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+            <div className="w-5 h-5 rounded-full bg-sky-500/10 flex items-center justify-center text-sky-500 flex-shrink-0">
+              <PiggyBank className="w-3.5 h-3.5" />
+            </div>
+            <span className="text-[10px] font-semibold tracking-wider uppercase">Savings</span>
+          </div>
+          <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
+            {formatCompact(summary.savings, currencySymbol)}
+          </p>
+        </div>
       </div>
 
       {/* Charts row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Monthly Bar Chart */}
         <div className="card rounded-2xl p-5 lg:col-span-2 animate-fade-in delay-200">
-          <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--muted-foreground)' }}>Income vs Expenses (6 months)</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">Income vs Expenses (6 months)</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={monthlyData} barSize={10} barGap={3}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
@@ -166,11 +180,11 @@ export default function DashboardPage() {
               <YAxis tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false}
                 tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} width={40} />
               <Tooltip
-                formatter={(value: number) => [formatCurrency(value, currencySymbol), '']}
+                formatter={(value: any) => [formatCurrency(Number(value) || 0, currencySymbol), '']}
                 contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', fontSize: 12 }}
                 labelStyle={{ color: 'var(--foreground)', fontWeight: 600 }}
               />
-              <Bar dataKey="income" fill="#22c55e" radius={[4, 4, 0, 0]} name="Income" />
+              <Bar dataKey="income" fill="#10b981" radius={[4, 4, 0, 0]} name="Income" />
               <Bar dataKey="expenses" fill="#ef4444" radius={[4, 4, 0, 0]} name="Expenses" />
             </BarChart>
           </ResponsiveContainer>
@@ -185,13 +199,13 @@ export default function DashboardPage() {
         {/* Recent transactions */}
         <div className="card rounded-2xl p-5 animate-fade-in delay-300">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold" style={{ color: 'var(--muted-foreground)' }}>Recent Transactions</h3>
-            <Link href="/transactions" className="text-xs font-medium flex items-center gap-1 hover:gap-2 transition-all"
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Recent Transactions</h3>
+            <Link href="/transactions" className="text-xs font-semibold flex items-center gap-1 hover:gap-2 transition-all"
               style={{ color: '#6366f1' }}>
               View all <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
-          <div className="space-y-3">
+          <div className="flex flex-col gap-3">
             {recentTx.length === 0 ? (
               <p className="text-sm text-center py-8" style={{ color: 'var(--muted-foreground)' }}>
                 No transactions yet.<br />
@@ -214,7 +228,7 @@ export default function DashboardPage() {
 
         {/* Category spending pie */}
         <div className="card rounded-2xl p-5 animate-fade-in delay-400">
-          <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--muted-foreground)' }}>Spending by Category</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">Spending by Category</h3>
           {categorySpending.length === 0 ? (
             <p className="text-sm text-center py-8" style={{ color: 'var(--muted-foreground)' }}>No expense data yet</p>
           ) : (
@@ -228,7 +242,7 @@ export default function DashboardPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    formatter={(v: number) => [formatCurrency(v, currencySymbol), '']}
+                    formatter={(v: any) => [formatCurrency(Number(v) || 0, currencySymbol), '']}
                     contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', fontSize: 12 }}
                   />
                 </PieChart>
@@ -253,8 +267,8 @@ export default function DashboardPage() {
       {savingsGoals.length > 0 && (
         <div className="card rounded-2xl p-5 animate-fade-in delay-400">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold" style={{ color: 'var(--muted-foreground)' }}>Savings Goals</h3>
-            <Link href="/savings" className="text-xs font-medium flex items-center gap-1 hover:gap-2 transition-all" style={{ color: '#6366f1' }}>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Savings Goals</h3>
+            <Link href="/savings" className="text-xs font-semibold flex items-center gap-1 hover:gap-2 transition-all" style={{ color: '#6366f1' }}>
               View all <ArrowRight className="w-3 h-3" />
             </Link>
           </div>

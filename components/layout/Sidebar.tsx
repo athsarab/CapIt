@@ -60,7 +60,7 @@ export function Sidebar({ onClose }: SidebarProps) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-2 space-y-1">
+      <nav className="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto no-scrollbar">
         {navItems.map(({ href, icon: Icon, label }) => {
           const isActive = pathname === href || pathname.startsWith(href + '/');
           return (
@@ -70,12 +70,11 @@ export function Sidebar({ onClose }: SidebarProps) {
               onClick={onClose}
               id={`nav-${label.toLowerCase()}`}
               className={cn(
-                'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200',
+                'flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 border border-transparent',
                 isActive
-                  ? 'text-white shadow-md'
-                  : 'hover:bg-slate-100 dark:hover:bg-slate-800'
+                  ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold border-indigo-500/15'
+                  : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900/40 hover:text-slate-800 dark:hover:text-slate-200'
               )}
-              style={isActive ? { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' } : { color: 'var(--muted-foreground)' }}
             >
               <Icon className="w-5 h-5 flex-shrink-0" />
               {label}
@@ -85,7 +84,7 @@ export function Sidebar({ onClose }: SidebarProps) {
       </nav>
 
       {/* Bottom actions */}
-      <div className="p-3 border-t space-y-1" style={{ borderColor: 'var(--border)' }}>
+      <div className="p-3 border-t flex flex-col gap-1 pb-[calc(env(safe-area-inset-bottom)+12px)]" style={{ borderColor: 'var(--border)' }}>
         <Link
           href="/settings"
           onClick={onClose}

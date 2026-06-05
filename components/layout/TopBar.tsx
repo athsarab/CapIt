@@ -25,11 +25,9 @@ export function TopBar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 flex items-center justify-between px-4 py-3"
+      <header className="sticky top-0 z-40 flex items-center justify-between px-4 py-2.5 border-b border-slate-100 dark:border-slate-800/80 bg-white/85 dark:bg-[#090a0f]/85 backdrop-blur-lg"
         style={{
-          background: 'var(--card)',
-          borderBottom: '1px solid var(--border)',
-          paddingTop: 'calc(env(safe-area-inset-top) + 12px)',
+          paddingTop: 'calc(env(safe-area-inset-top) + 8px)',
         }}>
         <button
           onClick={() => setDrawerOpen(true)}
@@ -58,7 +56,7 @@ export function TopBar() {
 
       {/* Mobile drawer */}
       {drawerOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
+        <div className="fixed inset-0 z-[60] lg:hidden">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setDrawerOpen(false)} />
           <div className="absolute left-0 top-0 bottom-0 w-72 animate-slide-in">
             <Sidebar onClose={() => setDrawerOpen(false)} />

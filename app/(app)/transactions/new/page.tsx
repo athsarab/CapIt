@@ -90,7 +90,7 @@ export default function NewTransactionPage() {
   }
 
   return (
-    <div className="max-w-lg mx-auto space-y-4">
+    <div className="max-w-lg mx-auto flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-center gap-3 animate-fade-in">
         <Link href="/transactions" className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" style={{ color: 'var(--muted-foreground)' }}>
@@ -102,15 +102,19 @@ export default function NewTransactionPage() {
       {/* Quick Templates */}
       <div className="card rounded-2xl p-4 animate-fade-in">
         <div className="flex items-center gap-2 mb-3">
-          <Zap className="w-4 h-4" style={{ color: '#6366f1' }} />
-          <span className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>Quick Add Templates</span>
+          <Zap className="w-4 h-4 text-indigo-500" />
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Quick Add Templates</span>
         </div>
         <div className="flex gap-2 mb-3">
           {([['student', 'Student', GraduationCap], ['worker', 'Worker', Briefcase], ['common', 'Common', Zap]] as const).map(([key, label, Icon]) => (
-            <button key={key} id={`template-${key}`}
+            <button key={key} type="button" id={`template-${key}`}
               onClick={() => setActiveTemplate(activeTemplate === key ? null : key)}
-              className={cn('flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-medium transition-all', activeTemplate === key ? 'text-white' : '')}
-              style={activeTemplate === key ? { background: '#6366f1' } : { background: 'var(--muted)', color: 'var(--muted-foreground)' }}>
+              className={cn(
+                'flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition-all border',
+                activeTemplate === key 
+                  ? 'bg-indigo-600 dark:bg-indigo-500 text-white border-transparent shadow-sm' 
+                  : 'bg-slate-50 hover:bg-slate-100 dark:bg-[#161824] dark:hover:bg-[#1e202f] border-slate-100 dark:border-slate-800/80 text-slate-500 dark:text-slate-400'
+              )}>
               <Icon className="w-3.5 h-3.5" />
               {label}
             </button>
@@ -122,14 +126,13 @@ export default function NewTransactionPage() {
             {(activeTemplate === 'student' ? STUDENT_TEMPLATES : activeTemplate === 'worker' ? WORKER_TEMPLATES : COMMON_TEMPLATES).map(tmpl => {
               const cat = categories.find(c => c.name === tmpl.category_name);
               return (
-                <button key={tmpl.id} id={`tmpl-${tmpl.id}`}
+                <button key={tmpl.id} type="button" id={`tmpl-${tmpl.id}`}
                   onClick={() => applyTemplate(tmpl)}
-                  className="flex items-center gap-2 p-2.5 rounded-xl border text-left transition-all hover:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/30"
-                  style={{ borderColor: 'var(--border)', background: 'var(--muted)' }}>
+                  className="flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all hover:border-indigo-400/50 hover:bg-indigo-50/30 dark:hover:bg-indigo-950/20 bg-slate-50/50 dark:bg-[#161824]/50 border-slate-100 dark:border-slate-800/80">
                   {cat && <CategoryIcon icon={cat.icon} color={cat.color} size={14} />}
                   <div className="min-w-0">
-                    <p className="text-xs font-medium truncate" style={{ color: 'var(--foreground)' }}>{tmpl.label}</p>
-                    <p className="text-[10px]" style={{ color: 'var(--muted-foreground)' }}>{formatCurrency(tmpl.amount, currencySymbol)}</p>
+                    <p className="text-xs font-medium truncate text-slate-800 dark:text-slate-200">{tmpl.label}</p>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400">{formatCurrency(tmpl.amount, currencySymbol)}</p>
                   </div>
                 </button>
               );
@@ -139,14 +142,20 @@ export default function NewTransactionPage() {
       </div>
 
       {/* Main Form */}
-      <form onSubmit={handleSubmit} className="card rounded-2xl p-5 space-y-4 animate-fade-in">
+      <form onSubmit={handleSubmit} className="card rounded-2xl p-5 flex flex-col gap-4 animate-fade-in">
         {/* Type toggle */}
-        <div className="flex gap-1 p-1 rounded-xl" style={{ background: 'var(--muted)' }}>
+        <div className="flex gap-1 p-1 rounded-xl bg-slate-100/80 dark:bg-slate-900/50">
           {(['expense', 'income'] as TransactionType[]).map(t => (
             <button key={t} type="button" id={`type-${t}`}
               onClick={() => { setType(t); setCategoryId(''); }}
-              className={cn('flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all capitalize', type === t ? 'text-white shadow-md' : '')}
-              style={type === t ? { background: t === 'income' ? '#22c55e' : '#ef4444' } : { color: 'var(--muted-foreground)' }}>
+              className={cn(
+                'flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all capitalize', 
+                type === t 
+                  ? t === 'income' 
+                    ? 'bg-emerald-500 text-white shadow-sm' 
+                    : 'bg-rose-500 text-white shadow-sm' 
+                  : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-400'
+              )}>
               {t === 'income' ? '↑ Income' : '↓ Expense'}
             </button>
           ))}
@@ -154,9 +163,9 @@ export default function NewTransactionPage() {
 
         {/* Amount */}
         <div>
-          <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--foreground)' }}>Amount (LKR)</label>
-          <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 font-semibold" style={{ color: 'var(--muted-foreground)' }}>Rs.</span>
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Amount (LKR)</label>
+          <div className="flex items-center rounded-xl border border-[var(--border)] bg-[var(--muted)] transition-all duration-200 focus-within:border-indigo-500 focus-within:bg-[var(--card)] focus-within:ring-2 focus-within:ring-indigo-500/15">
+            <span className="pl-4 pr-2 font-bold text-slate-400 dark:text-slate-500 select-none">Rs.</span>
             <input
               id="amount-input"
               type="number"
@@ -166,15 +175,15 @@ export default function NewTransactionPage() {
               onChange={e => setAmount(e.target.value)}
               placeholder="0.00"
               required
-              className="w-full pl-12 pr-4 py-3 rounded-xl text-lg font-bold border outline-none transition-all"
-              style={{ background: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
+              className="w-full pr-4 py-3 bg-transparent text-lg font-bold outline-none border-0 focus:ring-0 focus:!ring-0 focus:!border-0 focus:!border-transparent focus:!bg-transparent focus:!shadow-none"
+              style={{ color: 'var(--foreground)' }}
             />
           </div>
         </div>
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--foreground)' }}>Description</label>
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">Description</label>
           <input
             id="description-input"
             type="text"
@@ -193,20 +202,35 @@ export default function NewTransactionPage() {
 
         {/* Category */}
         <div>
-          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--foreground)' }}>Category</label>
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Category</label>
           <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-            {filteredCategories.map(cat => (
-              <button key={cat.id} type="button" id={`cat-${cat.id}`}
-                onClick={() => setCategoryId(cat.id)}
-                className={cn('flex flex-col items-center gap-1.5 p-2.5 rounded-xl border transition-all', categoryId === cat.id ? 'border-2' : 'hover:border-slate-300')}
-                style={{
-                  borderColor: categoryId === cat.id ? cat.color : 'var(--border)',
-                  background: categoryId === cat.id ? `${cat.color}18` : 'var(--muted)',
-                }}>
-                <CategoryIcon icon={cat.icon} color={cat.color} size={18} />
-                <span className="text-[10px] font-medium text-center leading-tight" style={{ color: 'var(--foreground)' }}>{cat.name}</span>
-              </button>
-            ))}
+            {filteredCategories.map(cat => {
+              const isSelected = categoryId === cat.id;
+              return (
+                <button key={cat.id} type="button" id={`cat-${cat.id}`}
+                  onClick={() => setCategoryId(cat.id)}
+                  className={cn(
+                    'flex flex-col items-center gap-1.5 p-2.5 rounded-xl border transition-all duration-150',
+                    isSelected 
+                      ? 'shadow-sm' 
+                      : 'border-slate-100 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700'
+                  )}
+                  style={{
+                    background: isSelected ? `${cat.color}15` : 'var(--muted)',
+                    borderColor: isSelected ? cat.color : '',
+                  }}>
+                  <CategoryIcon 
+                    icon={cat.icon} 
+                    color={isSelected ? cat.color : 'var(--muted-foreground)'} 
+                    size={18} 
+                  />
+                  <span className="text-[10px] font-semibold text-center leading-tight transition-colors duration-150"
+                    style={{ color: isSelected ? cat.color : 'var(--foreground)' }}>
+                    {cat.name}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -252,8 +276,7 @@ export default function NewTransactionPage() {
           id="save-transaction-btn"
           type="submit"
           disabled={loading}
-          className="w-full py-3.5 rounded-xl font-semibold text-white flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
-          style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}
+          className="btn-primary w-full py-3.5 flex items-center justify-center gap-2"
         >
           {loading && <Loader2 className="w-5 h-5 animate-spin" />}
           {loading ? 'Saving...' : 'Save Transaction'}
