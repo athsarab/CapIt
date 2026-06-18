@@ -5,7 +5,7 @@ import { useApp } from '@/lib/context/AppContext';
 import { getBudgetStatus, getCurrentMonthYear } from '@/lib/utils/finance';
 import toast from 'react-hot-toast';
 
-/**
+/** 
  * Invisible component that watches budgets and fires warnings
  * when new expenses push a category over 80% / 100% of its budget.
  */
